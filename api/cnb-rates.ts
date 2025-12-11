@@ -1,13 +1,12 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-import { env } from './env.server';
 import type { CNBRatesResponse, Rate } from '../src/types';
 
 /**
  * Helper for building the proxy URL with query params
  */
 export function buildProxyUrl(req: VercelRequest) {
-  const url = new URL(env.CNB_RATES_BASE_URL);
+  const url = new URL(process.env.CNB_RATES_BASE_URL);
   const queryParams = new URLSearchParams(req.query as Record<string, string>);
   url.search = queryParams.toString();
 
