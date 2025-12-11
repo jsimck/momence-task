@@ -2,17 +2,28 @@ import { ChevronDown, Check } from 'lucide-react';
 import { Select } from 'radix-ui';
 import styled from 'styled-components';
 
-import { getFlagByCode } from '../../constants/currency-code-to-flag';
-import { currencies } from '../../currencies-mock';
+import { getFlagImageByCode } from '../../constants/currency-code-to-flag';
+import { useCurrency } from '../../contexts/use-currency';
 
 export interface ConverterSelectProps {
   type: 'from' | 'to';
 }
 
-// @ts-expect-error ok for now
 export function ConverterSelect({ type }: ConverterSelectProps) {
+  const { fromCurrency, toCurrency, rates, setToCurrency, setFromCurrency } =
+    useCurrency();
+
   return (
-    <Select.Root value={currencies.rates[0].code}>
+    <Select.Root
+      value={type === 'from' ? fromCurrency : toCurrency}
+      onValueChange={value => {
+        if (type === 'from') {
+          setFromCurrency(value);
+        } else {
+          setToCurrency(value);
+        }
+      }}
+    >
       <SelectTrigger>
         <Select.Value />
         <SelectIcon>
@@ -22,7 +33,7 @@ export function ConverterSelect({ type }: ConverterSelectProps) {
       <Select.Portal>
         <SelectContent position='popper' sideOffset={5}>
           <SelectViewport>
-            {currencies.rates.map(currency => (
+            {rates.map(currency => (
               <SelectItem key={currency.code} value={currency.code}>
                 <SelectItemIndicator>
                   <Check size={14} />
@@ -30,7 +41,7 @@ export function ConverterSelect({ type }: ConverterSelectProps) {
                 <Select.ItemText>
                   <ItemContent>
                     <FlagImage
-                      src={`https://flagcdn.com/${getFlagByCode(currency.code)}.svg`}
+                      src={getFlagImageByCode(currency.code)}
                       alt={`${currency.code} flag`}
                     />
                     {currency.code}

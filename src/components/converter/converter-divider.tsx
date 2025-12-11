@@ -1,10 +1,14 @@
 import { ArrowUpDown } from 'lucide-react';
 import styled from 'styled-components';
 
+import { useCurrency } from '../../contexts/use-currency';
+
 export function ConverterDivider() {
+  const { swapCurrencies } = useCurrency();
+
   return (
     <Container>
-      <Button aria-label='Swap currencies'>
+      <Button aria-label='Swap currencies' onClick={swapCurrencies}>
         <ArrowUpDown size={20} />
       </Button>
     </Container>

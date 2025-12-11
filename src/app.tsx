@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react';
-import styled, { ThemeProvider, keyframes } from 'styled-components';
+import styled, { keyframes } from 'styled-components';
 
 import { Converter } from './components/converter/converter';
 import { Loader } from './components/loader';
 import { RatesTable } from './components/rates-table/rates-table';
-import { theme } from './components/theme';
 
 export function App() {
   const [isLoading, setIsLoading] = useState(true);
@@ -19,22 +18,20 @@ export function App() {
   }, []);
 
   return (
-    <ThemeProvider theme={theme}>
-      <Wrapper>
-        <Container>
-          {isLoading ? (
-            <LoadingWrapper>
-              <Loader />
-            </LoadingWrapper>
-          ) : (
-            <ContentWrapper>
-              <Converter />
-              <RatesTable />
-            </ContentWrapper>
-          )}
-        </Container>
-      </Wrapper>
-    </ThemeProvider>
+    <Wrapper>
+      <Container>
+        {isLoading ? (
+          <LoadingWrapper>
+            <Loader />
+          </LoadingWrapper>
+        ) : (
+          <ContentWrapper>
+            <Converter />
+            <RatesTable />
+          </ContentWrapper>
+        )}
+      </Container>
+    </Wrapper>
   );
 }
 

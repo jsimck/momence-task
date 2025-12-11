@@ -6,7 +6,7 @@ declare global {
   }
 }
 
-export interface Rate {
+export interface Currency {
   country: string;
   currency: string;
   amount: number;
@@ -17,5 +17,5 @@ export interface Rate {
 export interface CNBRatesResponse {
   date: string;
   publishedCount: number;
-  rates: Rate[];
+  rates: Currency[];
 }

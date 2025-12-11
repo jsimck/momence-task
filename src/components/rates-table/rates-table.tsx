@@ -1,13 +1,16 @@
 import styled from 'styled-components';
 
-import { getFlagByCode } from '../../constants/currency-code-to-flag';
-import { currencies } from '../../currencies-mock';
+import { getFlagImageByCode } from '../../constants/currency-code-to-flag';
+import { useCurrency } from '../../contexts/use-currency';
 import { formatRate } from '../../lib/format-rate';
 
 export function RatesTable() {
-  const baseRate = 1;
-  const baseAmount = 1;
-  const normalizedBaseRate = baseRate / baseAmount;
+  const { rates, toCurrency, getCurrency } = useCurrency();
+
+  const baseCurrency = getCurrency(toCurrency);
+  const baseRate = baseCurrency?.amount ?? 1;
+  const baseAmount = baseCurrency?.rate ?? 1;
+  const normalizedBaseRate = baseAmount / baseRate;
 
   return (
     <TableWrapper>
@@ -15,11 +18,13 @@ export function RatesTable() {
         <thead>
           <tr>
             <Th>Currency</Th>
-            <Th>Rate (vs EUR)</Th>
+            <Th>
+              Rate {baseRate} (vs {toCurrency})
+            </Th>
           </tr>
         </thead>
         <tbody>
-          {currencies.rates.map(currency => {
+          {rates.map(currency => {
             const normalizedCurrencyRate = currency.rate / currency.amount;
             const relativeRate = normalizedCurrencyRate / normalizedBaseRate;
 
@@ -28,7 +33,7 @@ export function RatesTable() {
                 <Td>
                   <CurrencyCell>
                     <FlagImage
-                      src={`https://flagcdn.com/${getFlagByCode(currency.code)}.svg`}
+                      src={getFlagImageByCode(currency.code)}
                       alt={`${currency.code} flag`}
                     />
                     <Code>{currency.code}</Code>

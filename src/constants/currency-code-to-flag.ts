@@ -9,7 +9,6 @@ export const CurrencyCodeToFlag = Object.freeze({
   HKD: 'hk',
   HUF: 'hu',
   ISK: 'is',
-  XDR: 'xdr',
   INR: 'in',
   IDR: 'id',
   ILS: 'il',
@@ -26,6 +25,7 @@ export const CurrencyCodeToFlag = Object.freeze({
   KRW: 'kr',
   SEK: 'se',
   CHF: 'ch',
+  CZK: 'cz',
   THB: 'th',
   TRY: 'tr',
   GBP: 'gb',
@@ -34,4 +34,14 @@ export const CurrencyCodeToFlag = Object.freeze({
 
 export function getFlagByCode(code: string): string {
   return CurrencyCodeToFlag[code as keyof typeof CurrencyCodeToFlag] || 'xx';
+}
+
+export function getFlagImageByCode(code: string): string {
+  const flagCode = getFlagByCode(code);
+
+  if (flagCode === 'xx') {
+    return '/flag-fallback.svg';
+  }
+
+  return `https://flagcdn.com/${flagCode}.svg`;
 }
