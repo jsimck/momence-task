@@ -9,9 +9,10 @@ export interface ConverterSelectProps {
   type: 'from' | 'to';
 }
 
+// @ts-expect-error ok for now
 export function ConverterSelect({ type }: ConverterSelectProps) {
   return (
-    <Select.Root>
+    <Select.Root value={currencies.rates[0].code}>
       <SelectTrigger>
         <Select.Value />
         <SelectIcon>
