@@ -1,9 +1,10 @@
 import { useQuery } from '@tanstack/react-query';
 
 import { env } from '../env.client';
+import type { CNBRatesResponse } from '../types';
 
 export function useCNBRates() {
-  return useQuery({
+  return useQuery<CNBRatesResponse>({
     queryKey: ['cnb'],
     queryFn: async () => {
       const response = await fetch(`${env.VITE_APP_URL}/api/cnb-rates`);
@@ -12,7 +13,7 @@ export function useCNBRates() {
         throw new Error('Failed to fetch CNB data');
       }
 
-      return response.text();
+      return response.json() as Promise<CNBRatesResponse>;
     },
   });
 }

@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-import type { CNBRatesResponse, Rate } from '../src/types';
+import type { CNBRatesResponse, Rate } from '../src/types.ts';
 
 /**
  * Helper for building the proxy URL with query params
@@ -22,7 +22,7 @@ export function parseCNBRatesResponse(text: string): CNBRatesResponse {
   const [date, publishedCount] = meta.split('#');
 
   return {
-    date,
+    date: date.trim(),
     publishedCount: Number.parseInt(publishedCount) || 0,
     rates: rates.map((line): Rate => {
       const [country, currency, amount, code, rate] = line.split('|');

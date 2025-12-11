@@ -14,7 +14,9 @@
   "dependencies": {
     "@t3-oss/env-core": "^0.13.8",
     "@tanstack/react-query": "^5.90.12",
+    "lucide-react": "^0.560.0",
     "nanoreset": "^7.0.0",
+    "radix-ui": "^1.4.3",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
     "styled-components": "^6.1.19",
