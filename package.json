@@ -8,25 +8,32 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
+    "test": "vitest",
     "preview": "vite preview"
   },
   "dependencies": {
+    "@t3-oss/env-core": "^0.13.8",
     "@tanstack/react-query": "^5.90.12",
     "nanoreset": "^7.0.0",
     "react": "^19.2.0",
     "react-dom": "^19.2.0",
-    "styled-components": "^6.1.19"
+    "styled-components": "^6.1.19",
+    "zod": "^4.1.13"
   },
   "devDependencies": {
     "@jsimck/eslint-config": "^2.0.1",
+    "@total-typescript/shoehorn": "^0.1.2",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
     "@types/react-dom": "^19.2.3",
     "@vercel/node": "^5.5.15",
     "@vitejs/plugin-react-swc": "^4.2.2",
+    "dotenv": "^17.2.3",
     "eslint": "8",
+    "msw": "^2.12.4",
     "typescript": "~5.9.3",
-    "vite": "npm:rolldown-vite@7.2.5"
+    "vite": "npm:rolldown-vite@7.2.5",
+    "vitest": "^4.0.15"
   },
   "pnpm": {
     "overrides": {

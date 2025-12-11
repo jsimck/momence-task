@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import styled from 'styled-components';
 
+import { env } from './env.client';
 import { useCNBRates } from './hooks/use-cnb-rates';
 
 const Button = styled.button`
@@ -19,6 +20,7 @@ export function App() {
   return (
     <>
       <h1>Momence Task</h1>
+      {env.VITE_APP_URL}
       <pre>{data}</pre>
       <Button onClick={() => setCount(count => count + 1)}>
         count is {count}
