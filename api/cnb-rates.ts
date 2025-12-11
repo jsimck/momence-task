@@ -1,6 +1,6 @@
 import type { VercelRequest, VercelResponse } from '@vercel/node';
 
-import type { CNBRatesResponse, Rate } from '../src/types.ts';
+import type { CNBRatesResponse, Currency } from '../src/types.ts';
 
 /**
  * Helper for building the proxy URL with query params
@@ -17,24 +17,33 @@ export function buildProxyUrl(req: VercelRequest) {
  * Parse the CNB rates response into a CNBRatesResponse object.
  */
 export function parseCNBRatesResponse(text: string): CNBRatesResponse {
-  const [meta, ...data] = text.split('\n');
+  const [meta, ...data] = text.trim().split('\n');
   const [_, ...rates] = data;
   const [date, publishedCount] = meta.split('#');
 
   return {
     date: date.trim(),
     publishedCount: Number.parseInt(publishedCount) || 0,
-    rates: rates.map((line): Rate => {
-      const [country, currency, amount, code, rate] = line.split('|');
+    rates: rates
+      .map((line): Currency => {
+        const [country, currency, amount, code, rate] = line.split('|');
 
-      return {
-        country,
-        currency,
-        amount: Number.parseInt(amount),
-        code,
-        rate: Number.parseFloat(rate),
-      };
-    }),
+        return {
+          country,
+          currency,
+          amount: Number.parseInt(amount),
+          code,
+          rate: Number.parseFloat(rate),
+        };
+      })
+      .filter(
+        rate =>
+          rate.code &&
+          rate.rate &&
+          rate.amount &&
+          rate.country &&
+          rate.currency,
+      ),
   };
 }
 
@@ -57,9 +66,10 @@ export default async function handler(req: VercelRequest, res: VercelResponse) {
     const url = buildProxyUrl(req);
     const response = await fetch(url.toString());
     const text = await response.text();
+    const parsedData = parseCNBRatesResponse(text);
 
     res.setHeader('Cache-Control', 's-maxage=3600, stale-while-revalidate');
-    res.status(200).json(parseCNBRatesResponse(text));
+    res.status(200).json(parsedData);
   } catch {
     res.status(500).json({ message: 'Failed to fetch CNB data' });
   }
