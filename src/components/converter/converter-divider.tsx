@@ -1,10 +1,11 @@
 import { ArrowUpDown } from 'lucide-react';
+import { memo } from 'react';
 import styled from 'styled-components';
 
-import { useCurrency } from '../../contexts/use-currency';
+import { useCurrencyStore } from '../../stores/currency-store';
 
-export function ConverterDivider() {
-  const { swapCurrencies } = useCurrency();
+export const ConverterDivider = memo(() => {
+  const swapCurrencies = useCurrencyStore(state => state.swapCurrencies);
 
   return (
     <Container>
@@ -13,7 +14,7 @@ export function ConverterDivider() {
       </Button>
     </Container>
   );
-}
+});
 
 const Container = styled.div`
   position: relative;

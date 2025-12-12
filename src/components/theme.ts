@@ -13,7 +13,6 @@ export const theme = {
     primary: '#6366f1',
     primaryFg: '#ffffff',
     border: 'rgba(228, 228, 231, 0.6)',
-    titleGradient: 'linear-gradient(to right, #1e293b, #64748b)',
     muted: '#71717a',
     mutedForeground: '#a1a1aa',
     input: '#ffffff',

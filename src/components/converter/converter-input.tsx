@@ -1,39 +1,71 @@
+import { memo, useCallback, type ChangeEvent } from 'react';
 import styled from 'styled-components';
 
 import { ConverterSelect } from './converter-select';
 
-interface ConverterInputProps {
+export interface ConverterInputProps {
   label?: string;
-  type: 'from' | 'to';
   placeholder?: string;
-  value?: string;
+  value: string;
   readOnly?: boolean;
+  onChange?: (value: string) => void;
+  currency: string;
+  onCurrencyChange: (code: string) => void;
 }
 
-export function ConverterInput({
-  label,
-  type,
-  placeholder = '0.00',
-  value,
-  readOnly,
-}: ConverterInputProps) {
-  return (
-    <Wrapper>
-      {label && <Label>{label}</Label>}
-      <Container>
-        <CountryWrapper>
-          <ConverterSelect type={type} />
-        </CountryWrapper>
-        <InputWrapper
-          type='text'
-          placeholder={placeholder}
-          defaultValue={value}
-          readOnly={readOnly}
-        />
-      </Container>
-    </Wrapper>
-  );
-}
+export const ConverterInput = memo(
+  ({
+    label,
+    placeholder = '0.00',
+    value,
+    readOnly,
+    onChange,
+    currency,
+    onCurrencyChange,
+  }: ConverterInputProps) => {
+    const handleChange = useCallback(
+      (e: ChangeEvent<HTMLInputElement>) => {
+        const inputValue = e.target.value;
+
+        // Allow empty string, numbers, and single decimal point
+        if (inputValue === '' || inputValue === '.') {
+          onChange?.(inputValue);
+
+          return;
+        }
+
+        // Validate: only numbers and one decimal point
+        const isValid = /^\d*\.?\d*$/.test(inputValue);
+
+        if (isValid) {
+          onChange?.(inputValue);
+        }
+      },
+      [onChange],
+    );
+
+    return (
+      <Wrapper>
+        {label && <Label>{label}</Label>}
+        <Container>
+          <CountryWrapper>
+            <ConverterSelect
+              currency={currency}
+              onCurrencyChange={onCurrencyChange}
+            />
+          </CountryWrapper>
+          <InputWrapper
+            type='text'
+            placeholder={placeholder}
+            value={value}
+            readOnly={readOnly}
+            onChange={handleChange}
+          />
+        </Container>
+      </Wrapper>
+    );
+  },
+);
 
 const Container = styled.div`
   display: flex;

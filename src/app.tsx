@@ -1,21 +1,18 @@
-import { useState, useEffect } from 'react';
-import styled, { keyframes } from 'styled-components';
+import styled from 'styled-components';
 
 import { Converter } from './components/converter/converter';
-import { Loader } from './components/loader';
+import { Loader } from './components/loader/loader';
 import { RatesTable } from './components/rates-table/rates-table';
+import {
+  useCurrencyStore,
+  useCurrencyStoreSync,
+} from './stores/currency-store';
 
 export function App() {
-  const [isLoading, setIsLoading] = useState(true);
+  const isLoading = useCurrencyStore(state => state.isLoading);
 
-  useEffect(() => {
-    // TODO connect to actual data fetch
-    const timer = setTimeout(() => {
-      setIsLoading(false);
-    }, 1500);
-
-    return () => clearTimeout(timer);
-  }, []);
+  // Sync React Query with Zustand store
+  useCurrencyStoreSync();
 
   return (
     <Wrapper>
@@ -34,11 +31,6 @@ export function App() {
     </Wrapper>
   );
 }
-
-const fadeIn = keyframes`
-  from { opacity: 0; transform: translateY(10px); }
-  to { opacity: 1; transform: translateY(0); }
-`;
 
 const Wrapper = styled.div`
   overflow: hidden;
@@ -102,7 +94,6 @@ const ContentWrapper = styled.div`
   max-width: 480px;
   position: relative;
   z-index: 1;
-  animation: ${fadeIn} 0.6s ease-out;
 `;
 
 const LoadingWrapper = styled.div`

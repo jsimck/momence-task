@@ -1,12 +1,13 @@
+import { memo } from 'react';
 import styled, { keyframes } from 'styled-components';
 
-export function Loader() {
+export const Loader = memo(() => {
   return (
     <LoaderOverlay>
       <Spinner />
     </LoaderOverlay>
   );
-}
+});
 
 const spin = keyframes`
   0% { transform: rotate(0deg); }

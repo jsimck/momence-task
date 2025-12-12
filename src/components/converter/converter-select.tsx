@@ -1,60 +1,54 @@
 import { ChevronDown, Check } from 'lucide-react';
 import { Select } from 'radix-ui';
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import { getFlagImageByCode } from '../../constants/currency-code-to-flag';
-import { useCurrency } from '../../contexts/use-currency';
+import { useCurrencyStore } from '../../stores/currency-store';
 
 export interface ConverterSelectProps {
-  type: 'from' | 'to';
+  currency: string;
+  onCurrencyChange: (code: string) => void;
 }
 
-export function ConverterSelect({ type }: ConverterSelectProps) {
-  const { fromCurrency, toCurrency, rates, setToCurrency, setFromCurrency } =
-    useCurrency();
+export const ConverterSelect = memo(
+  ({ currency, onCurrencyChange }: ConverterSelectProps) => {
+    const rates = useCurrencyStore(state => state.rates);
 
-  return (
-    <Select.Root
-      value={type === 'from' ? fromCurrency : toCurrency}
-      onValueChange={value => {
-        if (type === 'from') {
-          setFromCurrency(value);
-        } else {
-          setToCurrency(value);
-        }
-      }}
-    >
-      <SelectTrigger>
-        <Select.Value />
-        <SelectIcon>
-          <ChevronDown size={16} />
-        </SelectIcon>
-      </SelectTrigger>
-      <Select.Portal>
-        <SelectContent position='popper' sideOffset={5}>
-          <SelectViewport>
-            {rates.map(currency => (
-              <SelectItem key={currency.code} value={currency.code}>
-                <SelectItemIndicator>
-                  <Check size={14} />
-                </SelectItemIndicator>
-                <Select.ItemText>
-                  <ItemContent>
-                    <FlagImage
-                      src={getFlagImageByCode(currency.code)}
-                      alt={`${currency.code} flag`}
-                    />
-                    {currency.code}
-                  </ItemContent>
-                </Select.ItemText>
-              </SelectItem>
-            ))}
-          </SelectViewport>
-        </SelectContent>
-      </Select.Portal>
-    </Select.Root>
-  );
-}
+    return (
+      <Select.Root value={currency} onValueChange={onCurrencyChange}>
+        <SelectTrigger>
+          <Select.Value />
+          <SelectIcon>
+            <ChevronDown size={16} />
+          </SelectIcon>
+        </SelectTrigger>
+        <Select.Portal>
+          <SelectContent position='popper' sideOffset={5}>
+            <SelectViewport>
+              {rates.map(currency => (
+                <SelectItem key={currency.code} value={currency.code}>
+                  <SelectItemIndicator>
+                    <Check size={14} />
+                  </SelectItemIndicator>
+                  <Select.ItemText>
+                    <ItemContent>
+                      <FlagImage
+                        src={getFlagImageByCode(currency.code)}
+                        alt={`${currency.code} flag`}
+                      />
+                      {currency.code}
+                    </ItemContent>
+                  </Select.ItemText>
+                </SelectItem>
+              ))}
+            </SelectViewport>
+          </SelectContent>
+        </Select.Portal>
+      </Select.Root>
+    );
+  },
+);
 
 const SelectTrigger = styled(Select.Trigger)`
   display: inline-flex;

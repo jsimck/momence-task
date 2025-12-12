@@ -1,20 +1,50 @@
+import { memo } from 'react';
 import styled from 'styled-components';
+import { useShallow } from 'zustand/shallow';
 
 import { ConverterDivider } from './converter-divider';
+import { ConverterHeader } from './converter-header';
 import { ConverterInput } from './converter-input';
-import { Metadata } from '../metadata';
+import { useCurrencyStore } from '../../stores/currency-store';
 
-export function Converter() {
+export const Converter = memo(() => {
+  const {
+    fromAmount,
+    toAmount,
+    fromCurrency,
+    toCurrency,
+    lastUpdated,
+    setFromAmount,
+    setFromCurrency,
+    setToCurrency,
+  } = useCurrencyStore(
+    useShallow(state => ({
+      fromAmount: state.fromAmount,
+      toAmount: state.toAmount,
+      fromCurrency: state.fromCurrency,
+      toCurrency: state.toCurrency,
+      lastUpdated: state.lastUpdated,
+      setFromAmount: state.setFromAmount,
+      setFromCurrency: state.setFromCurrency,
+      setToCurrency: state.setToCurrency,
+    })),
+  );
+
   return (
     <Card>
-      <Header>
-        <Title>Currency Converter</Title>
-        <Metadata />
-      </Header>
+      <ConverterHeader lastUpdated={lastUpdated || 'N/A'}>
+        Currency Converter
+      </ConverterHeader>
 
       <ConverterSection>
         <Top>
-          <ConverterInput label='From' type='from' value='1000' />
+          <ConverterInput
+            label='From'
+            value={fromAmount}
+            onChange={setFromAmount}
+            currency={fromCurrency}
+            onCurrencyChange={setFromCurrency}
+          />
         </Top>
 
         <DividerWrapper>
@@ -22,12 +52,18 @@ export function Converter() {
         </DividerWrapper>
 
         <Bottom>
-          <ConverterInput label='To' type='to' value='940.50' readOnly />
+          <ConverterInput
+            label='To'
+            value={toAmount}
+            readOnly
+            currency={toCurrency}
+            onCurrencyChange={setToCurrency}
+          />
         </Bottom>
       </ConverterSection>
     </Card>
   );
-}
+});
 
 const Card = styled.div`
   display: flex;
@@ -41,25 +77,6 @@ const Card = styled.div`
   border: 1px solid ${props => props.theme.colors.borderLight};
   overflow: hidden;
   position: relative;
-`;
-
-const Header = styled.div`
-  padding: 24px;
-  display: flex;
-  flex-direction: column;
-  justify-content: space-between;
-  align-items: flex-start;
-`;
-
-const Title = styled.h2`
-  font-size: 20px;
-  font-weight: 700;
-  letter-spacing: -0.02em;
-  color: ${props => props.theme.colors.foreground};
-  margin: 0;
-  background: ${props => props.theme.colors.titleGradient};
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
 `;
 
 const ConverterSection = styled.div`

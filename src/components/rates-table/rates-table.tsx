@@ -1,11 +1,14 @@
+import { memo } from 'react';
 import styled from 'styled-components';
 
 import { getFlagImageByCode } from '../../constants/currency-code-to-flag';
-import { useCurrency } from '../../contexts/use-currency';
 import { formatRate } from '../../lib/format-rate';
+import { useCurrencyStore } from '../../stores/currency-store';
 
-export function RatesTable() {
-  const { rates, toCurrency, getCurrency } = useCurrency();
+export const RatesTable = memo(() => {
+  const rates = useCurrencyStore(state => state.rates);
+  const getCurrency = useCurrencyStore(state => state.getCurrency);
+  const toCurrency = useCurrencyStore(state => state.toCurrency);
 
   const baseCurrency = getCurrency(toCurrency);
   const baseRate = baseCurrency?.amount ?? 1;
@@ -47,7 +50,7 @@ export function RatesTable() {
       </Table>
     </TableWrapper>
   );
-}
+});
 
 const TableWrapper = styled.div`
   max-height: 600px;
