@@ -1,8 +1,11 @@
+import { useCallback } from 'react';
 import styled from 'styled-components';
 
 import { Converter } from './components/converter/converter';
+import { Error } from './components/error/error';
 import { Loader } from './components/loader/loader';
 import { RatesTable } from './components/rates-table/rates-table';
+import { useCNBRates } from './hooks/use-cnb-rates';
 import {
   useCurrencyStore,
   useCurrencyStoreSync,
@@ -10,9 +13,16 @@ import {
 
 export function App() {
   const isLoading = useCurrencyStore(state => state.isLoading);
+  const isError = useCurrencyStore(state => state.isError);
+  const error = useCurrencyStore(state => state.error);
+  const { refetch } = useCNBRates();
 
   // Sync React Query with Zustand store
   useCurrencyStoreSync();
+
+  const handleRetry = useCallback(() => {
+    refetch();
+  }, [refetch]);
 
   return (
     <Wrapper>
@@ -21,6 +31,13 @@ export function App() {
           <LoadingWrapper>
             <Loader />
           </LoadingWrapper>
+        ) : isError ? (
+          <ContentWrapper>
+            <Error
+              message={error?.message || 'Unknown error'}
+              onRetry={handleRetry}
+            />
+          </ContentWrapper>
         ) : (
           <ContentWrapper>
             <Converter />

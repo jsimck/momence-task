@@ -1,7 +1,10 @@
-import { beforeAll, afterEach, afterAll } from 'vitest';
+import * as matchers from '@testing-library/jest-dom/vitest';
+import { beforeAll, afterEach, afterAll, expect } from 'vitest';
 
 import { server } from './api/__test__/__mocks__/node';
 import { MOCK_CNB_BASE_URL } from './api/__test__/test-constants';
+
+expect.extend(matchers);
 
 beforeAll(() => server.listen());
 afterEach(() => server.resetHandlers());

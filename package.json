@@ -26,6 +26,9 @@
   },
   "devDependencies": {
     "@jsimck/eslint-config": "^2.0.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.0",
+    "@testing-library/user-event": "^14.6.1",
     "@total-typescript/shoehorn": "^0.1.2",
     "@types/node": "^24.10.1",
     "@types/react": "^19.2.5",
@@ -34,6 +37,7 @@
     "@vitejs/plugin-react-swc": "^4.2.2",
     "dotenv": "^17.2.3",
     "eslint": "8",
+    "jsdom": "^27.3.0",
     "msw": "^2.12.4",
     "typescript": "~5.9.3",
     "vite": "npm:rolldown-vite@7.2.5",
@@ -43,6 +47,5 @@
     "overrides": {
       "vite": "npm:rolldown-vite@7.2.5"
     }
-  },
-  "packageManager": "pnpm@9.15.9+sha512.68046141893c66fad01c079231128e9afb89ef87e2691d69e4d40eee228988295fd4682181bae55b58418c3a253bde65a505ec7c5f9403ece5cc3cd37dcf2531"
+  }
 }

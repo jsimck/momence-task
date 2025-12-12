@@ -32,14 +32,14 @@ export const CurrencyCodeToFlag = Object.freeze({
   USD: 'us',
 });
 
-export function getFlagByCode(code: string): string {
-  return CurrencyCodeToFlag[code as keyof typeof CurrencyCodeToFlag] || 'xx';
+export function getFlagByCode(code: string): string | null {
+  return CurrencyCodeToFlag[code as keyof typeof CurrencyCodeToFlag] || null;
 }
 
 export function getFlagImageByCode(code: string): string {
   const flagCode = getFlagByCode(code);
 
-  if (flagCode === 'xx') {
+  if (!flagCode) {
     return '/flag-fallback.svg';
   }
 

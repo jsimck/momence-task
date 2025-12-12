@@ -3,7 +3,7 @@ import type { VercelRequest, VercelResponse } from '@vercel/node';
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest';
 
 import { MOCK_CNB_BASE_URL } from './test-constants';
-import handler, { buildProxyUrl } from '../cnb-rates';
+import handler, { buildProxyUrl, parseCNBRatesResponse } from '../cnb-rates';
 
 describe('cnb-rates', () => {
   describe('buildProxyUrl', () => {
@@ -37,6 +37,83 @@ describe('cnb-rates', () => {
     });
   });
 
+  describe('parseCNBRatesResponse', () => {
+    it('should parse valid CNB rates response', () => {
+      const text = `11 Dec 2025 #240
+Country|Currency|Amount|Code|Rate
+Australia|dollar|1|AUD|13.764
+Brazil|real|100|BRL|3.800`;
+
+      const result = parseCNBRatesResponse(text);
+
+      expect(result.date).toBe('11 Dec 2025');
+      expect(result.publishedCount).toBe(240);
+      expect(result.rates).toHaveLength(2);
+      expect(result.rates[0]).toEqual({
+        country: 'Australia',
+        currency: 'dollar',
+        amount: 1,
+        code: 'AUD',
+        rate: 13.764,
+      });
+      expect(result.rates[1]).toEqual({
+        country: 'Brazil',
+        currency: 'real',
+        amount: 100,
+        code: 'BRL',
+        rate: 3.8,
+      });
+    });
+
+    it('should filter out invalid rate entries', () => {
+      const text = `11 Dec 2025 #240
+Country|Currency|Amount|Code|Rate
+Australia|dollar|1|AUD|13.764
+||||
+
+Brazil|real|1|BRL|3.800`;
+
+      const result = parseCNBRatesResponse(text);
+
+      expect(result.rates).toHaveLength(2);
+      expect(result.rates[0].code).toBe('AUD');
+      expect(result.rates[1].code).toBe('BRL');
+    });
+
+    it('should handle empty rates', () => {
+      const text = `11 Dec 2025 #240
+Country|Currency|Amount|Code|Rate`;
+
+      const result = parseCNBRatesResponse(text);
+
+      expect(result.date).toBe('11 Dec 2025');
+      expect(result.publishedCount).toBe(240);
+      expect(result.rates).toHaveLength(0);
+    });
+
+    it('should handle missing publishedCount', () => {
+      const text = `11 Dec 2025 #
+Country|Currency|Amount|Code|Rate
+Australia|dollar|1|AUD|13.764`;
+
+      const result = parseCNBRatesResponse(text);
+
+      expect(result.date).toBe('11 Dec 2025');
+      expect(result.publishedCount).toBe(0);
+      expect(result.rates).toHaveLength(1);
+    });
+
+    it('should trim whitespace from date', () => {
+      const text = `  11 Dec 2025  #240
+Country|Currency|Amount|Code|Rate
+Australia|dollar|1|AUD|13.764`;
+
+      const result = parseCNBRatesResponse(text);
+
+      expect(result.date).toBe('11 Dec 2025');
+    });
+  });
+
   describe('handler', () => {
     let req: VercelRequest;
     let res: VercelResponse;
@@ -66,7 +143,7 @@ describe('cnb-rates', () => {
       expect(res.json).toHaveBeenCalled();
       expect(result).toMatchInlineSnapshot(`
         {
-          "date": "11 Dec 2025 ",
+          "date": "11 Dec 2025",
           "publishedCount": 240,
           "rates": [
             {
